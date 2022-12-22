@@ -12,7 +12,8 @@ export default function TextForm(props) {
     }
 
     const handleTitleClick = () => {
-        let ans = capitalCase(text);
+        let temp = text.toLowerCase();
+        let ans = capitalCase(temp);
         setText(ans);
         props.showAlert("Text Converted to Title Case!","success");
     }
@@ -26,6 +27,7 @@ export default function TextForm(props) {
         let text = document.getElementById('myBox');
         text.select();
         navigator.clipboard.writeText(text.value);
+        document.getSelection().removeAllRanges();
         props.showAlert("Text Copied to Clipboard!","success");
     }
 
@@ -46,18 +48,18 @@ export default function TextForm(props) {
         return ans;
     }
 
-    const words = (str) => {
-        if(str.length === 0){
-            return 0;
-        }
-        let count = 1;
-        for(let i = 0; i<str.length-1; i++){
-            if(str.charAt(i) === " " && str.charAt(i+1) !== " "){
-                count++;
-            }
-        }
-        return count;
-    }
+    // const words = (str) => {
+    //     if(str.length === 0){
+    //         return 0;
+    //     }
+    //     let count = 1;
+    //     for(let i = 0; i<str.length-1; i++){
+    //         if(str.charAt(i) === " " && str.charAt(i+1) !== " "){
+    //             count++;
+    //         }
+    //     }
+    //     return count;
+    // }
 
     const handleOnChange = (event) => {
         setText(event.target.value);
@@ -68,21 +70,21 @@ export default function TextForm(props) {
     return (
         <>
         <div className='container' style={{ color : props.mode === 'light' ? '#042743' : 'white'}}>
-            <h1>{props.heading}</h1>
+            <h1 className='mb-4'>{props.heading}</h1>
             <div className="mb-3">
-            <textarea className="form-control" value={text} style={{backgroundColor : props.mode === 'light' ? 'white' : 'gray', color : props.mode === 'light' ? '#042743' : 'white'}} onChange={handleOnChange} id="myBox" rows="8" ></textarea>
+            <textarea className="form-control" value={text} style={{backgroundColor : props.mode === 'light' ? 'white' : 'rgb(10 67 112)', color : props.mode === 'light' ? '#042743' : 'white'}} onChange={handleOnChange} id="myBox" rows="8" ></textarea>
             </div>
-            <button onClick={handleUpClick} className="btn btn-primary">Convert to UPPERCASE</button>
-            <button onClick={handleLoClick} className="btn btn-primary mx-2">Convert to lowercase</button>
-            <button onClick={handleTitleClick} className="btn btn-primary mx-2">Convert to Title Case</button>
-            <button onClick={handleCopy} className="btn btn-primary mx-2 my-2">Copy Text</button>
-            <button onClick={handleClearClick} className="btn btn-primary mx-2">Clear</button>
+            <button disabled={text.length === 0} onClick={handleUpClick} className="btn btn-primary">Convert to UPPERCASE</button>
+            <button disabled={text.length === 0} onClick={handleLoClick} className="btn btn-primary mx-2 my-2">Convert to lowercase</button>
+            <button disabled={text.length === 0} onClick={handleTitleClick} className="btn btn-primary mx-2 my-2">Convert to Title Case</button>
+            <button disabled={text.length === 0} onClick={handleCopy} className="btn btn-primary mx-2 my-2 my-2">Copy Text</button>
+            <button disabled={text.length === 0} onClick={handleClearClick} className="btn btn-primary mx-2 my-2">Clear</button>
             
         </div>
         <div className="container my-3" style={{ color : props.mode === 'light' ? '#042743' : 'white'}}>
             <h2>Your text Summary</h2>
-            <p>{words(text)} words and {text.length} characters</p>
-            <p>{0.008 * text.split(" ").length} minute read</p>
+            <p>{text.split(" ").filter((element) => {return element.length!==0}).length} words and {text.length} characters</p>
+            <p>{0.008 * text.split(" ").filter((element) => {return element.length!==0}).length} minute read</p>
             <h2>Preview</h2>
             <p>{text.length > 0 ? text : 'Enter text to Preview..'}</p>
         </div>
